@@ -15,15 +15,6 @@ public class TrelloAPITesting extends TestBase {
     static String checklistId;
     static String checkItemId;
 
-    @Test
-    public void checkConfigValues() {
-        System.out.println("KEY: " + key);
-        System.out.println("TOKEN: " + token);
-        System.out.println("BASEURL: " + baseUrl);
-        Assert.assertNotNull(key, "API key is null!");
-        Assert.assertNotNull(token, "API token is null!");
-        Assert.assertNotNull(baseUrl, "Base URL is null!");
-    }
 
     @Test(priority = 1)
     public void createBoard() {
@@ -38,11 +29,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().post()
                 .then().extract().response();
 
-        System.out.println("Status Code: " + response.getStatusCode());
-        System.out.println("Raw Response:\n" + response.asString());
-        System.out.println("Redirect URL (if any): " + response.getHeader("Location"));
-
-        System.out.println("Create Board Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "Board creation failed");
 
         if (response.getStatusCode() == 200) {
@@ -51,10 +37,6 @@ public class TrelloAPITesting extends TestBase {
         } else {
             test.fail("Board creation failed.");
         }
-
-        System.out.println("🔐 Using Key: " + key);
-        System.out.println("🔐 Using Token: " + token);
-        System.out.println("📡 Full URL: " + baseUrl + "/boards");
     }
 
     @Test(priority = 2)
@@ -73,7 +55,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().get()
                 .then().extract().response();
 
-        System.out.println("Get Board Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "Failed to retrieve board");
         test.pass("Board fetched successfully");
     }
@@ -93,10 +74,10 @@ public class TrelloAPITesting extends TestBase {
                 .queryParam("idBoard", boardId)
                 .queryParam("key", key)
                 .queryParam("token", token)
+                .header("Content-Type", "application/json")
                 .when().post()
                 .then().extract().response();
 
-        System.out.println("Create List Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "List creation failed");
 
         if (response.getStatusCode() == 200) {
@@ -123,7 +104,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().get()
                 .then().extract().response();
 
-        System.out.println("Get List Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "Failed to retrieve list");
         test.pass("List fetched successfully");
     }
@@ -143,10 +123,10 @@ public class TrelloAPITesting extends TestBase {
                 .queryParam("idList", listId)
                 .queryParam("key", key)
                 .queryParam("token", token)
+                .header("Content-Type", "application/json")
                 .when().post()
                 .then().extract().response();
 
-        System.out.println("Create Card Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "Card creation failed");
 
         if (response.getStatusCode() == 200) {
@@ -173,7 +153,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().get()
                 .then().extract().response();
 
-        System.out.println("Get Card Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "Failed to retrieve card");
         test.pass("Card fetched successfully");
     }
@@ -193,10 +172,10 @@ public class TrelloAPITesting extends TestBase {
                 .queryParam("name", "Rest Assured Checklist")
                 .queryParam("key", key)
                 .queryParam("token", token)
+                .header("Content-Type", "application/json")
                 .when().post()
                 .then().extract().response();
 
-        System.out.println("Create Checklist Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "Checklist creation failed");
 
         if (response.getStatusCode() == 200) {
@@ -223,7 +202,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().get()
                 .then().extract().response();
 
-        System.out.println("Get Checklist Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "Failed to retrieve checklist");
         test.pass("Checklist fetched successfully");
     }
@@ -242,10 +220,10 @@ public class TrelloAPITesting extends TestBase {
                 .queryParam("name", "Item_1")
                 .queryParam("key", key)
                 .queryParam("token", token)
+                .header("Content-Type", "application/json")
                 .when().post()
                 .then().extract().response();
 
-        System.out.println("Add CheckItem Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "CheckItem creation failed");
 
         if (response.getStatusCode() == 200) {
@@ -272,7 +250,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().delete()
                 .then().extract().response();
 
-        System.out.println("Delete CheckItem Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "CheckItem deletion failed");
         test.pass("CheckItem deleted");
     }
@@ -293,7 +270,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().delete()
                 .then().extract().response();
 
-        System.out.println("Delete Checklist Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "Checklist deletion failed");
         test.pass("Checklist deleted");
     }
@@ -315,7 +291,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().post()
                 .then().extract().response();
 
-        System.out.println("Negative Add CheckItem Response:\n" + response.asString());
         Assert.assertNotEquals(response.getStatusCode(), 200, "Unexpectedly succeeded");
         test.pass("Properly rejected adding item to deleted checklist.");
     }
@@ -336,7 +311,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().delete()
                 .then().extract().response();
 
-        System.out.println("Delete Card Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "Card deletion failed");
         test.pass("Card deleted");
     }
@@ -358,7 +332,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().put()
                 .then().extract().response();
 
-        System.out.println("Update Deleted Card Response:\n" + response.asString());
         Assert.assertNotEquals(response.getStatusCode(), 200, "Unexpectedly updated a deleted card");
         test.pass("Correctly rejected update on deleted card.");
     }
@@ -379,7 +352,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().delete()
                 .then().extract().response();
 
-        System.out.println("Delete Board Response:\n" + response.asString());
         Assert.assertEquals(response.getStatusCode(), 200, "Board deletion failed");
         test.pass("Board deleted successfully");
     }
@@ -401,7 +373,6 @@ public class TrelloAPITesting extends TestBase {
                 .when().put()
                 .then().extract().response();
 
-        System.out.println("Update Deleted Board Response:\n" + response.asString());
         Assert.assertNotEquals(response.getStatusCode(), 200, "Unexpectedly updated a deleted board");
         test.pass("Correctly rejected update on deleted board.");
     }
