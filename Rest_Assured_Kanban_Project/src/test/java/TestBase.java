@@ -14,7 +14,7 @@ public class TestBase {
     protected static ExtentTest test;  // Declare test instance
 
     @BeforeSuite
-    public void beforeMethod() {
+    public void setupReport() {
         report = new ExtentReports();
         ExtentSparkReporter spark = new ExtentSparkReporter("Reports/report.html");
         spark.config().setTheme(Theme.DARK);
@@ -24,7 +24,7 @@ public class TestBase {
     }
 
     @AfterSuite
-    public void afterMethod() throws IOException {
+    public void tearDownReport() throws IOException {
         report.flush();
         Desktop.getDesktop().open(new File("Reports/report.html"));
     }
